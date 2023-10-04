@@ -17,21 +17,18 @@ const NavBar = () => {
   };
 
   return (
-    <div>
-      <div className="w-full h-32 flex justify-between bg-sky-500">
-        <div className="my-auto flex items-center space-x-5">
+    <div className="max-w-full h-32 bg-sky-500">
+      <div className="h-full max-w-[150rem] mx-auto flex justify-between items-center">
+        <button className="my-auto max-w-6xl flex items-center space-x-5">
           <img
             className="w-24 rounded-full ml-10"
             src="/img/logo.jpg"
             alt="logo"
           />
-          <label
-            className="text-5xl font-sans font-bold uppercase tracking-widest text-white"
-            htmlFor="#"
-          >
+          <span className="text-5xl font-sans font-bold uppercase tracking-widest text-white">
             Fayfoysix
-          </label>
-        </div>
+          </span>
+        </button>
 
         {/* Mobile NavBar */}
         <button
