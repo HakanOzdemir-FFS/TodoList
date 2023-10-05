@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import MonthView from "./Components/Calender/MonthView";
+import YearView from "./Components/Calender/YearView";
 import NavBar from "./Components/NavBar/Navbar";
 import NewTodo from "./Components/NewTodo/NewTodo";
 import NewTodoArea from "./Components/NewTodo/NewTodoArea";
@@ -13,7 +13,7 @@ function App() {
       <div className="flex justify-center items-center xl:space-x-64 ">
         <div>
           <NewTodo />
-          <MonthView />
+          <YearView />
         </div>
         <NewTodoArea
           isFullScreen={isFullScreen}

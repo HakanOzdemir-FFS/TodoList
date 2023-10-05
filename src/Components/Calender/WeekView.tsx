@@ -29,8 +29,8 @@ const WeekView: React.FC<WeekViewProps> = ({ handleMonthClick, ...props }) => {
             className="list-none md:w-full border-2 mb-5 border-transparent hover:border-2 hover:border-cyan-500 cursor-pointer "
             onClick={handleWeekClick(index)}
           >
-            <div className="w-full h-80 border overflow-y-auto bg-white rounded-md relative hide-scrollbar">
-              <span className="h-[150rem] absolute top-1 left-1 text-2xl font-thin">
+            <div className="w-full h-80 border  bg-white rounded-md relative hide-scrollbar">
+              <span className=" absolute top-1 left-1 text-2xl font-thin">
                 {week}
               </span>
             </div>

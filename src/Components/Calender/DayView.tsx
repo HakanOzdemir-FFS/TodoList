@@ -20,7 +20,7 @@ const DayView = () => {
             className="list-none md:w-full border-2 mb-5 border-transparent hover:border-2 hover:border-cyan-500 cursor-pointer "
           >
             <div className="w-full h-52 border  bg-white rounded-md relative hide-scrollbar">
-              <span className="h-[150rem] absolute top-1 left-1 text-2xl font-thin">
+              <span className="absolute top-1 left-1 text-2xl font-thin">
                 {day}
               </span>
             </div>
