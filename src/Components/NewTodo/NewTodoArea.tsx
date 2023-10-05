@@ -1,9 +1,13 @@
-import { stringify } from "querystring";
 import React, { useState } from "react";
 
 import NewStep from "./NewStep";
 
-const NewTodoArea = () => {
+type NewTodoAreaProps = {
+  isFullScreen?: boolean;
+  setIsFullScreen?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const NewTodoArea = (props: NewTodoAreaProps) => {
   const [isCheck, setIsCheck] = useState(false);
 
   const checkHandler = () => {
@@ -12,14 +16,17 @@ const NewTodoArea = () => {
     } else {
       setIsCheck(true);
     }
-    console.log(isCheck);
   };
 
   return (
-    <div className="2xl:w-[50rem] 2xl:h-[76rem] 2xl:bg-white rounded-lg 2xl:overflow-y-auto 2xl:pb-10 hidden 2xl:block">
-      <h1 className="hidden xl:block text-5xl text-center pt-5 font-bold">
-        New Todo
-      </h1>
+    <div
+      className={`${
+        !props.isFullScreen
+          ? "pt-10 block"
+          : "2xl:max-w-[50rem] 2xl:max-h-[76rem] p-10 rounded-lg 2xl:overflow-y-auto hidden 2xl:block"
+      } bg-white pb-10`}
+    >
+      <h1 className="xl:block text-5xl text-center pt-5 font-bold">New Todo</h1>
 
       <div className="m-10 mt-20 flex items-center">
         <span className="w-[16rem] font-bold text-4xl">Todo Title :</span>
@@ -40,7 +47,9 @@ const NewTodoArea = () => {
       <div className="m-10 mt-10 flex items-center">
         <span className="w-[16rem] font-bold text-4xl">Priority Level :</span>
         <div className="flex items-center justify-center relative">
-          <span className="w-80 rounded-full h-2 bg-sky-500 relative">&nbsp;</span>
+          <span className="w-80 rounded-full h-2 bg-sky-500 relative">
+            &nbsp;
+          </span>
           <input
             className="text-3xl border-2 p-10 py-5  border-cyan-200 absolute left-1 top-50 cursor-pointer after:contents"
             type="radio"
