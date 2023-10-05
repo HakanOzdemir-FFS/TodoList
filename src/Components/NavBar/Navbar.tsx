@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import Login from "../User/Login";
+import SignUp from "../User/SignUp";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [animationName, setAnimationName] = useState("");
+  const [view, setView] = useState("");
 
   const navBarHandler = () => {
     if (isOpen) {
@@ -30,10 +33,10 @@ const NavBar = () => {
           </span>
         </button>
 
-        {/* Mobile NavBar */}
+        {/* Mobile NavBar Open*/}
         <button
           onClick={navBarHandler}
-          className={`w-24 h-24 mr-5 my-auto rounded-full flex flex-col justify-center items-center space-y-2 sm:hidden z-20 ${
+          className={`w-24 h-24 mr-5 my-auto fixed top-2 right-2 rounded-full flex flex-col justify-center items-center space-y-2 sm:hidden z-20 ${
             isOpen ? "bg-sky-500" : "bg-white"
           }`}
         >
@@ -47,6 +50,7 @@ const NavBar = () => {
             className={`w-10 h-[2px] ${isOpen ? "bg-white" : "bg-black"}`}
           ></span>
         </button>
+
         {isOpen && (
           <div
             className="fixed top-0 left-0 w-full h-full bg-white z-10"
@@ -67,18 +71,38 @@ const NavBar = () => {
             </div>
 
             <div className="w-[90%] justify-center mt-10 mx-auto flex flex-col items-center space-y-5 z-20">
-              <button
-                className=" h-20 rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
-                text-white shadow-md "
-              >
-                Log In
-              </button>
-              <button
-                className="h-20 rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
-                text-white shadow-md"
-              >
-                Sign Up
-              </button>
+              {view !== "login" && (
+                <div className="w-[100%]">
+                  <button
+                    onClick={() => setView("login")}
+                    className="h-20 w-[100%] rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
+          text-white shadow-md "
+                  >
+                    Log In
+                  </button>
+                  <p className="pt-5 font-sans text-center text-3xl text-stone-400">
+                    If you have an account: Log In
+                  </p>
+                </div>
+              )}
+
+              {view !== "signUp" && (
+                <div className="w-[100%]">
+                  <button
+                    onClick={() => setView("signUp")}
+                    className="h-20 w-[100%] rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
+          text-white shadow-md"
+                  >
+                    Sign Up
+                  </button>
+                  <p className="pt-5 font-sans text-center text-3xl text-stone-400">
+                    If you don't have an account: Sign Up
+                  </p>
+                </div>
+              )}
+
+              {view === "login" && <Login />}
+              {view === "signUp" && <SignUp />}
             </div>
             <div className="w-[90%] mt-10 mx-auto flex-col space-y-5 z-20 hidden">
               <button
@@ -109,7 +133,7 @@ const NavBar = () => {
           </div>
         )}
 
-        {/* Mobile NavBar */}
+        {/* Mobile NavBar End*/}
 
         <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex">
           <button className="w-32 h-16 rounded-2xl text-2xl font-sans font-bold bg-white shadow-md hover:bg-cyan-100 transition-all duration-200">

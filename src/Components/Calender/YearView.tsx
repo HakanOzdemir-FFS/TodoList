@@ -10,13 +10,16 @@ const YearView = () => {
   };
 
   if (selectedYear !== null) {
-    return <MonthView />;
+    return <MonthView selectedYearIndex={selectedYear} setSelectedYear={setSelectedYear} />;
   }
 
   return (
     <div className="flex flex-col items-center justify-center space-y-10 pt-10 w">
-      <div className="pt-10 w-[55rem] sm:w-[40rem] ">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <h1 className="text-white font-bold font-sans text-5xl text-center">
+        Welcome
+      </h1>
+      <div className="pt-0 w-[55rem] sm:w-[40rem] ">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-3">
           {Year.map((year, index) => (
             <li
               key={index}

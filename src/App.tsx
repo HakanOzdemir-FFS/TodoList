@@ -10,7 +10,7 @@ function App() {
   return (
     <div>
       <NavBar />
-      <div className="flex justify-center items-center xl:space-x-64 ">
+      <div className="flex justify-center  xl:space-x-64 ">
         <div>
           <NewTodo />
           <YearView />

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import WeekView from "./WeekView";
 
-const MonthView = () => {
+type MonthViewProps = {
+  selectedYearIndex: number;
+  setSelectedYear: React.Dispatch<React.SetStateAction<number | null>>;
+};
+
+const MonthView = (props: MonthViewProps) => {
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
 
   const Month = [
@@ -23,13 +28,30 @@ const MonthView = () => {
     setSelectedMonth(index);
   };
 
+  const clickedYear = 2023 + props.selectedYearIndex;
+
   if (selectedMonth !== null) {
-    return <WeekView handleMonthClick={handleMonthClick} />;
+    return (
+      <WeekView
+        selectedYear={clickedYear}
+        selectedMonthName={Month[selectedMonth]}
+        setSelectedMonth={setSelectedMonth}
+      />
+    );
   }
   return (
-    <div className="flex flex-col items-center justify-center space-y-10 pt-10 w">
+    <div className="flex flex-col items-center justify-center space-y-10">
       <div className="pt-10 w-[55rem] sm:w-[40rem] ">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+        <div
+          className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-red-400 border rounded-md cursor-pointer"
+          onClick={() => props.setSelectedYear(null)}
+        >
+          Click back to <br /> Year
+        </div>
+        <h1 className="text-white font-bold font-sans text-5xl text-center mb-5">
+          Year {clickedYear}
+        </h1>
+        <ul className="grid gap-x-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           {Month.map((month, index) => (
             <li
               key={index}
