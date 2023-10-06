@@ -1,11 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Login from "../User/Login";
 import SignUp from "../User/SignUp";
+import DesktopLogIn from "../User/DesktopLogIn";
+import { getAuth, signOut } from "firebase/auth";
 
-const NavBar = () => {
+interface NavBarProps {
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  onLoginSuccess: () => void;
+}
+
+const NavBar: React.FC<NavBarProps> = ({
+  isLoggedIn,
+  onLoginSuccess,
+  setIsLoggedIn,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [animationName, setAnimationName] = useState("");
   const [view, setView] = useState("");
+  const [desktopView, setDesktopView] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      console.log("Successfully signed out!");
+      setShowDropdown(false);
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
 
   const navBarHandler = () => {
     if (isOpen) {
@@ -17,6 +43,22 @@ const NavBar = () => {
       setAnimationName("slideInFromRight");
       setIsOpen(true);
     }
+  };
+
+  const logInClickHandler = () => {
+    setDesktopView("login");
+  };
+
+  const signUpClickHandler = () => {
+    setDesktopView("signUp");
+  };
+
+  useEffect(() => {
+    console.log(showDropdown);
+  }, [showDropdown]);
+
+  const userIconHandler = () => {
+    setShowDropdown(!showDropdown);
   };
 
   return (
@@ -70,85 +112,120 @@ const NavBar = () => {
               </label>
             </div>
 
-            <div className="w-[90%] justify-center mt-10 mx-auto flex flex-col items-center space-y-5 z-20">
-              {view !== "login" && (
-                <div className="w-[100%]">
-                  <button
-                    onClick={() => setView("login")}
-                    className="h-20 w-[100%] rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
-          text-white shadow-md "
-                  >
-                    Log In
-                  </button>
-                  <p className="pt-5 font-sans text-center text-3xl text-stone-400">
-                    If you have an account: Log In
-                  </p>
-                </div>
-              )}
-
-              {view !== "signUp" && (
-                <div className="w-[100%]">
-                  <button
-                    onClick={() => setView("signUp")}
-                    className="h-20 w-[100%] rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
+            {!isLoggedIn ? (
+              <div className="w-[90%] justify-center mt-10 mx-auto flex flex-col items-center space-y-5 z-20">
+                {view !== "login" && (
+                  <div className="w-[100%]">
+                    <button
+                      onClick={() => setView("login")}
+                      className="h-20 w-[100%] rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
           text-white shadow-md"
-                  >
-                    Sign Up
-                  </button>
-                  <p className="pt-5 font-sans text-center text-3xl text-stone-400">
-                    If you don't have an account: Sign Up
-                  </p>
-                </div>
-              )}
+                    >
+                      Log In
+                    </button>
+                    <p className="pt-5 font-sans text-center text-3xl text-stone-400">
+                      If you have an account: Log In
+                    </p>
+                  </div>
+                )}
 
-              {view === "login" && <Login />}
-              {view === "signUp" && <SignUp />}
-            </div>
-            <div className="w-[90%] mt-10 mx-auto flex-col space-y-5 z-20 hidden">
-              <button
-                className="lnr lnr-home text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
+                {view !== "signUp" && (
+                  <div className="w-[100%]">
+                    <button
+                      onClick={() => setView("signUp")}
+                      className="h-20 w-[100%] rounded-2xl text-5xl font-sans font-bold bg-sky-500 self-stretch
+          text-white shadow-md"
+                    >
+                      Sign Up
+                    </button>
+                    <p className="pt-5 font-sans text-center text-3xl text-stone-400">
+                      If you don't have an account: Sign Up
+                    </p>
+                  </div>
+                )}
+
+                {view === "login" && <Login onLoginSuccess={onLoginSuccess} />}
+                {view === "signUp" && <SignUp />}
+              </div>
+            ) : (
+              <div className="w-[90%] mt-10 mx-auto flex-col space-y-5 z-20">
+                <button
+                  className="lnr lnr-home text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
                py-3 px-1 rounded-xl "
-              >
-                <span className="font-sans font-bold"> Home</span>
-              </button>
-              <button
-                className="lnr lnr-alarm text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
+                >
+                  <span className="font-sans font-bold"> Home</span>
+                </button>
+                <button
+                  className="lnr lnr-alarm text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
                py-3 px-1 rounded-xl "
-              >
-                <span className="font-sans font-bold"> Notifications</span>
-              </button>
-              <button
-                className="lnr lnr-cog text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
+                >
+                  <span className="font-sans font-bold"> Notifications</span>
+                </button>
+                <button
+                  className="lnr lnr-cog text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
                py-3 px-1 rounded-xl"
-              >
-                <span className="font-sans font-bold"> Settings</span>
-              </button>
-              <button
-                className="lnr lnr-user text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
+                >
+                  <span className="font-sans font-bold"> Settings</span>
+                </button>
+
+                <button
+                  className="lnr lnr-user text-5xl w-full bg-sky-500 text-white hover:text-cyan-200 transition-all duration-200 
                py-3 px-1 rounded-xl"
-              >
-                <span className="font-sans font-bold"> User</span>
-              </button>
-            </div>
+                >
+                  <span className="font-sans font-bold "> User</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="lnr lnr-exit text-5xl w-full bg-rose-500 text-white hover:text-cyan-200 transition-all duration-200 
+               py-3 px-1 rounded-xl"
+                >
+                  <span className="font-sans font-bold "> Log Out</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
         {/* Mobile NavBar End*/}
 
-        <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex">
-          <button className="w-32 h-16 rounded-2xl text-2xl font-sans font-bold bg-white shadow-md hover:bg-cyan-100 transition-all duration-200">
-            Log In
-          </button>
-          <button className="w-32 h-16 rounded-2xl text-2xl font-sans font-bold bg-white shadow-md hover:bg-cyan-100 transition-all duration-200">
-            Sign Up
-          </button>
-        </div>
-        <div className="justify-between items-center mr-10 space-x-10 sm:hidden hidden ">
-          <button className="lnr lnr-home text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
-          <button className="lnr lnr-alarm text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
-          <button className="lnr lnr-cog text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
-          <button className="lnr lnr-user text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
-        </div>
+        {!isLoggedIn ? (
+          <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex">
+            <button
+              onClick={logInClickHandler}
+              className="w-32 h-16 rounded-2xl text-2xl font-sans font-bold bg-white shadow-md hover:bg-cyan-100 transition-all duration-200"
+            >
+              Log In
+            </button>
+            {desktopView && (
+              <DesktopLogIn
+                desktopView={desktopView}
+                setDesktopView={setDesktopView}
+                onLoginSuccess={onLoginSuccess}
+              />
+            )}
+            <button
+              onClick={signUpClickHandler}
+              className="w-32 h-16 rounded-2xl text-2xl font-sans font-bold bg-white shadow-md hover:bg-cyan-100 transition-all duration-200"
+            >
+              Sign Up
+            </button>
+          </div>
+        ) : (
+          <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex relative">
+            <button className="lnr lnr-home text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
+            <button className="lnr lnr-alarm text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
+            <button className="lnr lnr-cog text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
+            <button
+              onClick={userIconHandler}
+              className="lnr lnr-user text-5xl text-white hover:text-cyan-200 transition-all duration-200"
+            ></button>
+            {showDropdown && (
+              <div className="absolute text-white py-2 px-8 bg-rose-500 rounded-md top-[180%] font-bold text-2xl -right-10 z-10 border border-white">
+                <button onClick={handleLogout}>Log Out</button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

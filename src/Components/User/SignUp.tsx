@@ -1,12 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
+
 
 const SignUp = () => {
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = async () => {
+    const auth = getAuth();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      const db = getDatabase();
+      await set(ref(db, "users/" + user.uid), {
+        name: name,
+        surname: surname,
+        birthday: birthday,
+        email: email,
+      });
+
+      console.log("Kullanıcı bilgisi Realtime Database'e eklendi.");
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "auth/email-already-in-use"
+      ) {
+        alert("Bu e-posta adresiyle zaten bir hesap oluşturulmuş!");
+      } else if (
+        typeof error === "object" &&
+        error !== null &&
+        "message" in error
+      ) {
+        alert(error.message);
+      } else {
+        alert("Bir hata oluştu.");
+      }
+    }
+  };
+
   return (
     <div className=" flex justify-center items-baseline flex-col space-y-10 font-bold text-2xl">
       <div className="flex justify-start items-center space-x-12">
         <span className="w-24">Name:</span>
         <input
-          className="border-2 py-2 pl-4 pr-28"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border-2 py-2 pl-4 pr-28 focus:outline-2 outline-sky-500"
           type="text"
           placeholder="Name"
         />
@@ -14,19 +64,28 @@ const SignUp = () => {
       <div className="flex justify-center items-center space-x-12">
         <span className="w-24">Surname:</span>
         <input
-          className="border-2 py-2 pl-4 pr-28"
+          value={surname}
+          onChange={(e) => setSurname(e.target.value)}
+          className="border-2 py-2 pl-4 pr-28 focus:outline-2 outline-sky-500"
           type="text"
           placeholder="Surname"
         />
       </div>
       <div className="flex justify-center items-center space-x-12">
         <span className="w-24">Birthday:</span>
-        <input className="border-2 py-2 pl-4 pr-28" type="date" />
+        <input
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+          className="border-2 py-2 pl-4 pr-28 focus:outline-2 outline-sky-500"
+          type="date"
+        />
       </div>
       <div className="flex justify-center items-center space-x-12">
         <span className="w-24">Email:</span>
         <input
-          className="border-2 py-2 pl-4 pr-28"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border-2 py-2 pl-4 pr-28 focus:outline-2 outline-sky-500"
           type="email"
           placeholder="Email"
         />
@@ -34,12 +93,17 @@ const SignUp = () => {
       <div className="flex justify-center items-center space-x-12">
         <span className="w-24">Password:</span>
         <input
-          className="border-2 py-2 pl-4 pr-28"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border-2 py-2 pl-4 pr-28 focus:outline-2 outline-sky-500"
           type="password"
           placeholder="Password"
         />
       </div>
-      <button className="w-[50%] bg-sky-500 text-white py-2 rounded-md self-center">
+      <button
+        onClick={handleSignUp}
+        className="w-[50%] bg-sky-500 text-white py-2 rounded-md self-center"
+      >
         Sign Up
       </button>
     </div>
