@@ -220,8 +220,11 @@ const NavBar: React.FC<NavBarProps> = ({
               className="lnr lnr-user text-5xl text-white hover:text-cyan-200 transition-all duration-200"
             ></button>
             {showDropdown && (
-              <div className="absolute text-white py-2 px-8 bg-rose-500 rounded-md top-[180%] font-bold text-2xl -right-10 z-10 border border-white">
-                <button onClick={handleLogout}>Log Out</button>
+              <div className="absolute text-white py-2 px-8 bg-rose-500 rounded-md top-[180%]   -right-10 z-10 border border-white flex items-center space-x-5">
+                <button className="text-2xl font-bold flex items-center space-x-5" onClick={handleLogout}>
+                  <span className="lnr lnr-exit text-4xl"></span>
+                  <span> Log Out</span>
+                </button>
               </div>
             )}
           </div>
