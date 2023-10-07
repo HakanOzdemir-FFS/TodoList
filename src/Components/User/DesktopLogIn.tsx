@@ -6,6 +6,7 @@ interface DesktopLogInProps {
   desktopView: string;
   setDesktopView: React.Dispatch<React.SetStateAction<string>>;
   onLoginSuccess: () => void;
+  setLoggedUserId: React.Dispatch<React.SetStateAction<string>>;
 }
 const DesktopLogIn: React.FC<DesktopLogInProps> = (
   props: DesktopLogInProps
@@ -28,7 +29,7 @@ const DesktopLogIn: React.FC<DesktopLogInProps> = (
     >
       <div className="bg-white p-32 relative" onClick={preventPropagation}>
         {props.desktopView === "login" && (
-          <Login onLoginSuccess={props.onLoginSuccess} />
+          <Login  setLoggedUserId={props.setLoggedUserId} onLoginSuccess={props.onLoginSuccess} />
         )}
         {props.desktopView === "signUp" && <SignUp />}
         <span

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 interface LoginProps {
   onLoginSuccess: () => void;
+  setLoggedUserId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+const Login: React.FC<LoginProps> = ({ onLoginSuccess, setLoggedUserId }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [logInError, setLogInError] = useState(false);
@@ -19,6 +20,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         email,
         password
       );
+      if (userCredential && userCredential.user && userCredential.user.uid) {
+        setLoggedUserId(userCredential.user.uid);
+      }
 
       setLogInError(false);
       setLogInMessage(true);

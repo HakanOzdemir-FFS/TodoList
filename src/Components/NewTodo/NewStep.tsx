@@ -1,8 +1,12 @@
 import { stringify } from "querystring";
 import React, { useState, useRef } from "react";
 
-const NewStep: React.FC = () => {
-  const [steps, setSteps] = useState<string[]>([""]);
+type NewStepProps = {
+  steps: string[];
+  setSteps: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+const NewStep: React.FC<NewStepProps> = ({ steps, setSteps }) => {
   const lastInputRef = useRef<HTMLInputElement | null>(null);
 
   const addStep = () => {
@@ -36,7 +40,7 @@ const NewStep: React.FC = () => {
               value={step}
               onChange={(e) => updateStep(index, e.target.value)}
               onKeyDown={handleKeyDown}
-              className="py-2 pl-6 pr-52 border border-cyan-500 shadow-sm focus:outline-2 outline-sky-500"
+              className="py-2 pl-6 pr-32 border h-auto overflow-y-auto border-cyan-500 shadow-sm focus:outline-2 outline-sky-500"
               type="text"
               placeholder={`Please write ${index + 1}. step`}
             />

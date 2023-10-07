@@ -19,9 +19,10 @@ const NewTodo = () => {
             setIsFullScreen(!isFullScreen);
           }}
         >
-          {isClicked ? "Add New Todo" : "Close Todo Tab"}
+          {!isClicked ? "Close Todo Tab" : "Add New Todo"}
         </button>
       </div>
+
       <NewTodoArea
         isFullScreen={isFullScreen}
         setIsFullScreen={setIsFullScreen}

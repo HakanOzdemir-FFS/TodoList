@@ -8,12 +8,14 @@ interface NavBarProps {
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   onLoginSuccess: () => void;
+  setLoggedUserId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const NavBar: React.FC<NavBarProps> = ({
   isLoggedIn,
   onLoginSuccess,
   setIsLoggedIn,
+  setLoggedUserId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [animationName, setAnimationName] = useState("");
@@ -53,16 +55,12 @@ const NavBar: React.FC<NavBarProps> = ({
     setDesktopView("signUp");
   };
 
-  useEffect(() => {
-    console.log(showDropdown);
-  }, [showDropdown]);
-
   const userIconHandler = () => {
     setShowDropdown(!showDropdown);
   };
 
   return (
-    <div className="max-w-full h-32 bg-sky-500">
+    <div className="w-full z-50 h-32 bg-sky-500 fixed top-0 left-0">
       <div className="h-full max-w-[150rem] mx-auto flex justify-between items-center">
         <button className="my-auto max-w-6xl flex items-center space-x-5">
           <img
@@ -144,7 +142,12 @@ const NavBar: React.FC<NavBarProps> = ({
                   </div>
                 )}
 
-                {view === "login" && <Login onLoginSuccess={onLoginSuccess} />}
+                {view === "login" && (
+                  <Login
+                    setLoggedUserId={setLoggedUserId}
+                    onLoginSuccess={onLoginSuccess}
+                  />
+                )}
                 {view === "signUp" && <SignUp />}
               </div>
             ) : (
@@ -198,6 +201,7 @@ const NavBar: React.FC<NavBarProps> = ({
             </button>
             {desktopView && (
               <DesktopLogIn
+                setLoggedUserId={setLoggedUserId}
                 desktopView={desktopView}
                 setDesktopView={setDesktopView}
                 onLoginSuccess={onLoginSuccess}
@@ -220,8 +224,11 @@ const NavBar: React.FC<NavBarProps> = ({
               className="lnr lnr-user text-5xl text-white hover:text-cyan-200 transition-all duration-200"
             ></button>
             {showDropdown && (
-              <div className="absolute text-white py-2 px-8 bg-rose-500 rounded-md top-[180%]   -right-10 z-10 border border-white flex items-center space-x-5">
-                <button className="text-2xl font-bold flex items-center space-x-5" onClick={handleLogout}>
+              <div className="absolute text-white py-2 px-8 bg-rose-500 rounded-md top-[180%]   -right-10 z-10 border border-white flex items-center space-x-5 hover:bg-rose-700 duration-150">
+                <button
+                  className="text-2xl font-bold flex items-center space-x-5"
+                  onClick={handleLogout}
+                >
                   <span className="lnr lnr-exit text-4xl"></span>
                   <span> Log Out</span>
                 </button>

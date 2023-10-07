@@ -14,7 +14,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: orange;
-  padding-bottom: 10rem;
 }
 
 code {
@@ -47,4 +46,8 @@ code {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.radial-gradient {
+  background: radial-gradient(circle, #fff, #000);
 }
