@@ -57,7 +57,7 @@ const YearView: React.FC<YearViewProps> = ({ loggedUserId }) => {
                 <div className="2xl:w-52 h-52 border bg-white rounded-md relative hide-scrollbar flex justify-center items-center">
                   <span className="absolute top-1 left-1">{year}</span>
                   <div
-                    className="font-sans text-2xl rounded-full bg-red-500 flex justify-center items-center"
+                    className="font-sans text-2xl rounded-full bg-rose-500 flex justify-center items-center"
                     style={{
                       width: `${sizeDiv}rem`,
                       height: `${sizeDiv}rem`,

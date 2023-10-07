@@ -3,6 +3,7 @@ import Login from "../User/Login";
 import SignUp from "../User/SignUp";
 import DesktopLogIn from "../User/DesktopLogIn";
 import { getAuth, signOut } from "firebase/auth";
+import DarkMode from "./DarkMode";
 
 interface NavBarProps {
   isLoggedIn: boolean;
@@ -193,6 +194,7 @@ const NavBar: React.FC<NavBarProps> = ({
 
         {!isLoggedIn ? (
           <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex">
+            <DarkMode />
             <button
               onClick={logInClickHandler}
               className="w-32 h-16 rounded-2xl text-2xl font-sans font-bold bg-white shadow-md hover:bg-cyan-100 transition-all duration-200"
@@ -216,7 +218,7 @@ const NavBar: React.FC<NavBarProps> = ({
           </div>
         ) : (
           <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex relative">
-            <button className="lnr lnr-home text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
+            <DarkMode />
             <button className="lnr lnr-alarm text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
             <button className="lnr lnr-cog text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
             <button

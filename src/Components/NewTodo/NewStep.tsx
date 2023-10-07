@@ -32,7 +32,7 @@ const NewStep: React.FC<NewStepProps> = ({ steps, setSteps }) => {
 
   return (
     <div>
-      <ul className="mt-20 flex flex-col justify-center items-center space-y-10 list-decimal font-sans text-3xl">
+      <ul className="mt-10 flex flex-col justify-center items-center space-y-10 list-decimal font-sans text-3xl">
         {steps.map((step, index) => (
           <li key={index}>
             <input

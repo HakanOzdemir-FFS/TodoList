@@ -834,8 +834,16 @@ video {
   width: 22rem;
 }
 
+.w-\[25\%\] {
+  width: 25%;
+}
+
 .w-\[25rem\] {
   width: 25rem;
+}
+
+.w-\[40rem\] {
+  width: 40rem;
 }
 
 .w-\[50\%\] {
@@ -973,6 +981,10 @@ video {
   align-self: stretch;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .overflow-y-auto {
   overflow-y: auto;
 }
@@ -1033,9 +1045,19 @@ video {
   background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
+.bg-blue-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
+}
+
 .bg-gray-900 {
   --tw-bg-opacity: 1;
   background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
+.bg-green-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(74 222 128 / var(--tw-bg-opacity));
 }
 
 .bg-red-400 {
@@ -1075,6 +1097,10 @@ video {
   padding: 8rem;
 }
 
+.p-4 {
+  padding: 1rem;
+}
+
 .p-5 {
   padding: 1.25rem;
 }
@@ -1087,6 +1113,11 @@ video {
 .px-20 {
   padding-left: 5rem;
   padding-right: 5rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .px-40 {
@@ -1144,6 +1175,10 @@ video {
   padding-right: 8rem;
 }
 
+.pr-4 {
+  padding-right: 1rem;
+}
+
 .pt-0 {
   padding-top: 0px;
 }
@@ -1154,6 +1189,10 @@ video {
 
 .pt-5 {
   padding-top: 1.25rem;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
 }
 
 .text-center {
@@ -1368,6 +1407,10 @@ code {
 
 .radial-gradient {
   background: radial-gradient(circle, #fff, #000);
+}
+
+.first-letter\:capitalize::first-letter {
+  text-transform: capitalize;
 }
 
 .after\:contents::after {

@@ -63,7 +63,7 @@ const MonthView: React.FC<MonthViewProps> = ({
   return (
     <div className="flex flex-col items-center justify-center space-y-10 pt-10 ">
       <div
-        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-red-400 border rounded-md cursor-pointer"
+        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer"
         onClick={() => setSelectedYear(null)}
       >
         Click back to <br /> Year
@@ -96,7 +96,7 @@ const MonthView: React.FC<MonthViewProps> = ({
                 <div className="2xl:w-52 h-52 border bg-white rounded-md relative hide-scrollbar flex justify-center items-center">
                   <span className="absolute top-1 left-1">{month}</span>
                   <div
-                    className="font-sans text-2xl rounded-full bg-red-500 flex justify-center items-center"
+                    className="font-sans text-2xl rounded-full bg-rose-500 flex justify-center items-center"
                     style={{
                       width: `${sizeDiv}rem`,
                       height: `${sizeDiv}rem`,

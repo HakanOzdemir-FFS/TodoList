@@ -31,7 +31,7 @@ const DayView = (props: DayViewProps) => {
   return (
     <div className="pt-10 w-[100%]">
       <div
-        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-red-400 border rounded-md cursor-pointer "
+        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer "
         onClick={() => props.setSelectedWeek(null)}
       >
         Click back to <br /> Week

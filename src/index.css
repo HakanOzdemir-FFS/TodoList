@@ -13,7 +13,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: orange;
 }
 
 code {
@@ -51,3 +50,47 @@ code {
 .radial-gradient {
   background: radial-gradient(circle, #fff, #000);
 }
+
+.dark.bg-orange-500 {
+  @apply bg-gray-dark-1;
+}
+
+.dark .bg-sky-500 {
+  @apply bg-gray-dark-2;
+}
+
+.dark .bg-white {
+  @apply bg-gray-dark-3;
+}
+
+.dark body,
+.dark p,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark span,
+.dark div {
+  @apply text-gray-dark-5;
+}
+
+.dark input {
+  @apply text-black;
+}
+
+.dark .bg-rose-500 {
+  @apply bg-rose-700;
+}
+
+.dark .bg-sky-400 {
+  @apply bg-sky-800;
+}
+
+.dark .bg-emerald-500 {
+  @apply bg-emerald-800;
+}
+
+
+
+
+
+

@@ -51,11 +51,11 @@ const WeekView: React.FC<WeekViewProps> = ({
   const getPriorityClass = (priority: string) => {
     switch (priority) {
       case "low":
-        return "bg-green-400";
+        return "bg-emerald-500";
       case "medium":
-        return "bg-blue-400";
+        return "bg-sky-400";
       case "high":
-        return "bg-red-400";
+        return "bg-rose-500";
       default:
         return "";
     }
@@ -64,7 +64,7 @@ const WeekView: React.FC<WeekViewProps> = ({
   return (
     <div className="flex flex-col items-center justify-center space-y-10 pt-10 ">
       <div
-        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-red-400 border rounded-md cursor-pointer"
+        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer"
         onClick={() => setSelectedMonth(null)}
       >
         Click back to <br /> Year

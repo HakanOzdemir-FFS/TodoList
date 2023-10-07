@@ -183,7 +183,17 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
           If you have steps please check.
         </label>
       </div>
-      <div>{isCheck && <NewStep steps={steps} setSteps={setSteps} />}</div>
+
+      <div>
+        {isCheck && (
+          <div className="flex justify-center pt-10 flex-col">
+            <span className="text-center font-sans font-bold text-2xl">
+              Press enter after each step
+            </span>
+            <NewStep steps={steps} setSteps={setSteps} />
+          </div>
+        )}
+      </div>
       <div className="flex flex-col justify-center items-center mt-16">
         <button
           onClick={handleSubmit}
