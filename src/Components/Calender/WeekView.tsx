@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import DayView from "./DayView";
-import { spawn } from "child_process";
 
 type Todo = {
   dueDate: string;
@@ -13,40 +12,29 @@ type Todo = {
 
 type WeekViewProps = {
   selectedMonthName: string;
-  selectedYear: number;
   setSelectedMonth: React.Dispatch<React.SetStateAction<number | null>>;
   loggedUserId: string;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   todos: Todo[];
+  clickedYear: number;
+  selectedMonthIndex: number;
 };
 
 const WeekView: React.FC<WeekViewProps> = ({
   selectedMonthName,
-  selectedYear,
   setSelectedMonth,
   loggedUserId,
   todos,
   setTodos,
+  clickedYear,
+  selectedMonthIndex,
 }) => {
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
-  const Weeks = ["1st Week of", "2nd Week of", "3rd Week of", "4th Week of"];
+  const weekDay = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const handleWeekClick = (index: number) => () => {
     setSelectedWeek(index);
   };
-
-  if (selectedWeek !== null) {
-    return (
-      <DayView
-        todos={todos}
-        setTodos={setTodos}
-        selectedYear={selectedYear}
-        selectedMonthName={selectedMonthName}
-        selectedWeek={Weeks[selectedWeek]}
-        setSelectedWeek={setSelectedWeek}
-      />
-    );
-  }
 
   const getPriorityClass = (priority: string) => {
     switch (priority) {
@@ -61,60 +49,190 @@ const WeekView: React.FC<WeekViewProps> = ({
     }
   };
 
+  const getHighestPriorityForDate = (
+    todos: Todo[],
+    date: Date
+  ): string | null => {
+    const todosForDay = todos.filter((todo) => {
+      const todoDate = new Date(todo.dueDate);
+      return (
+        todoDate.getDate() === date.getDate() &&
+        todoDate.getMonth() === date.getMonth() &&
+        todoDate.getFullYear() === date.getFullYear()
+      );
+    });
+
+    if (!todosForDay.length) return null;
+
+    return todosForDay.sort((a, b) => {
+      if (a.priority === "high" || b.priority === "low") return -1;
+      if (b.priority === "high" || a.priority === "low") return 1;
+      return 0;
+    })[0].priority;
+  };
+
+  if (selectedWeek !== null) {
+    return (
+      <DayView
+        selectedMonthIndex={selectedMonthIndex}
+        todos={todos}
+        setTodos={setTodos}
+        clickedYear={clickedYear}
+        selectedMonthName={selectedMonthName}
+        setSelectedWeek={setSelectedWeek}
+        selectedWeek={selectedWeek}
+      />
+    );
+  }
+
+  const getPriorityFrequencyForDate = (
+    todos: Todo[],
+    date: Date
+  ): { [key: string]: number } => {
+    const priorities = getPrioritiesForDate(todos, date);
+    const frequency: { [key: string]: number } = {};
+    priorities.forEach((priority) => {
+      if (!frequency[priority]) {
+        frequency[priority] = 1;
+      } else {
+        frequency[priority]++;
+      }
+    });
+    return frequency;
+  };
+
+  const getPrioritiesForDate = (todos: Todo[], date: Date): string[] => {
+    return todos
+      .filter((todo) => {
+        const todoDate = new Date(todo.dueDate);
+        return (
+          todoDate.getDate() === date.getDate() &&
+          todoDate.getMonth() === date.getMonth() &&
+          todoDate.getFullYear() === date.getFullYear()
+        );
+      })
+      .map((todo) => todo.priority);
+  };
+
+  const getFirstDayOfMonth = (year: number, monthIndex: number): number => {
+    const firstDay = new Date(year, monthIndex, 1);
+    return firstDay.getDay();
+  };
+
+  const getDaysInMonth = (year: number, monthIndex: number): number => {
+    return new Date(year, monthIndex + 1, 0).getDate();
+  };
+
+  const renderCalendar = (year: number, monthIndex: number) => {
+    let firstDay = getFirstDayOfMonth(year, monthIndex);
+
+    firstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+    const daysInMonth = getDaysInMonth(year, monthIndex);
+    const daysInPrevMonth =
+      monthIndex === 0
+        ? getDaysInMonth(year - 1, 11)
+        : getDaysInMonth(year, monthIndex - 1);
+
+    let currentDay = 1 - firstDay;
+
+    const weeks = [];
+
+    for (let i = 0; i < 6; i++) {
+      const days = [];
+
+      for (let j = 0; j < 7; j++) {
+        const date = new Date(year, monthIndex, currentDay);
+        const priorityFrequencies = getPriorityFrequencyForDate(todos, date);
+
+        const priorityDots = Object.keys(priorityFrequencies).map(
+          (priority) => (
+            <div
+              key={priority}
+              className={`w-4 h-4 rounded-full ${getPriorityClass(
+                priority
+              )} flex items-center justify-center relative`}
+            >
+              <span className="text-xs">{priorityFrequencies[priority]}</span>
+            </div>
+          )
+        );
+
+        if (currentDay <= 0) {
+          // Perv Month
+          days.push(
+            <div
+              key={j}
+              className={`w-16 h-16 bg-gray-dark-3 font-bold justify-center items-center flex`}
+            >
+              {daysInPrevMonth + currentDay}
+            </div>
+          );
+        } else if (currentDay > daysInMonth) {
+          // Next Month
+          days.push(
+            <div
+              key={j}
+              className="w-16 h-16 bg-gray-dark-3 font-bold justify-center items-center flex relative"
+            >
+              {currentDay - daysInMonth}
+            </div>
+          );
+        } else {
+          // This Month
+          days.push(
+            <div
+              key={j}
+              className="w-16 h-16 bg-black text-white font-bold justify-center items-center flex flex-col"
+            >
+              {currentDay}
+              <div
+                className=" flex flex-col;
+              "
+              >
+                {priorityDots}
+              </div>
+            </div>
+          );
+        }
+
+        currentDay++;
+      }
+
+      weeks.push(
+        <div key={i} className="flex space-x-10">
+          {days}
+        </div>
+      );
+    }
+
+    return weeks;
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center space-y-10 pt-10 ">
+    <div className="mt-10 pb-20">
       <div
-        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer"
+        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer "
         onClick={() => setSelectedMonth(null)}
       >
         Click back to <br /> Year
       </div>
-      <h1 className="text-white font-bold font-sans text-5xl text-center mb-5">
-        {`${selectedMonthName} of ${selectedYear}`}
+      <h1 className="text-white font-bold font-sans text-5xl text-center mb-10">
+        {`${selectedMonthName} ${clickedYear}`}
       </h1>
-      <div className="pt-0 w-[100%]">
-        <ul className="grid grid-cols-1">
-          {Weeks.map((week, index) => {
-            const todosForWeek = todos.filter((todo) => {
-              const dayOfMonth = new Date(todo.dueDate).getDate();
-              const weekStart = index * 7 + 1;
-              const weekEnd = (index + 1) * 7;
-              return dayOfMonth >= weekStart && dayOfMonth <= weekEnd;
-            });
 
-            return (
-              <li
-                key={index}
-                className="list-none md:w-full border-2 mb-5 border-transparent hover:border-2 hover:border-cyan-500 cursor-pointer "
-                onClick={handleWeekClick(index)}
-              >
-                <div className="w-full 2xl:w-[52rem] h-96 border bg-white rounded-md relative hide-scrollbar flex pt-6 overflow-auto">
-                  <span className="absolute top-1 left-1">{week}</span>
-                  <div className="font-sans text-2xl rounded-full  flex flex-col first-letter:capitalize p-4 space-y-2 ">
-                    {todosForWeek.map(
-                      ({ title, dueDate, priority }, todoIndex) => {
-                        const priorityClass = getPriorityClass(priority);
-
-                        return (
-                          <div
-                            className={`w-[40rem] py-4 text-white  first-letter-capitalize flex rounded-md justify-center ${priorityClass}`}
-                            key={todoIndex}
-                          >
-                            <span className="fons-sans pl-4 w-[50%]">
-                              {title}
-                            </span>
-                            <span className="px-4"> {"=>"}</span>
-                            <span className="pr-4 w-[25%]">{dueDate}</span>
-                          </div>
-                        );
-                      }
-                    )}
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+      <div className="w-[100%] h-auto p-5 bg-white flex flex-col space-y-10 justify-center items-center rounded-md shadow-md">
+        <div className="flex space-x-10">
+          {weekDay.map((day, index) => (
+            <div
+              key={index}
+              className="w-12 h-12 bg-sky-500 font-bold justify-center items-center flex"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+        {renderCalendar(clickedYear, selectedMonthIndex)}
       </div>
     </div>
   );

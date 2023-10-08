@@ -46,14 +46,20 @@ const MonthView: React.FC<MonthViewProps> = ({
   };
 
   const clickedYear = 2023 + selectedYearIndex;
+  let selectedMonthIndex: number | null = null;
 
   if (selectedMonth !== null) {
+    selectedMonthIndex = Month.indexOf(Month[selectedMonth]);
+  }
+
+  if (selectedMonth !== null && selectedMonthIndex !== null) {
     return (
       <WeekView
+        selectedMonthIndex={selectedMonthIndex}
         todos={todos}
         setTodos={setTodos}
         loggedUserId={loggedUserId}
-        selectedYear={clickedYear}
+        clickedYear={clickedYear}
         selectedMonthName={Month[selectedMonth]}
         setSelectedMonth={setSelectedMonth}
       />
@@ -75,8 +81,10 @@ const MonthView: React.FC<MonthViewProps> = ({
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-3">
           {Month.map((month, index) => {
             const todoCountForYear = todos.filter((todo) => {
-              const monthNumber = new Date(todo.dueDate).getMonth();
-              return monthNumber === index;
+              const todoDate = new Date(todo.dueDate);
+              const monthNumber = todoDate.getMonth();
+              const yearNumber = todoDate.getFullYear();
+              return monthNumber === index && yearNumber === clickedYear;
             }).length;
 
             const baseSizeDiv = 1;
