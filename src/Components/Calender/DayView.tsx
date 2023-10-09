@@ -1,46 +1,73 @@
-import React, { useState } from "react";
-
-type Todo = {
-  dueDate: string;
-  priority: string;
-  steps: string[];
-  title: string;
-  userId: string;
-};
+import React, { useRef, useEffect, useState } from "react";
+import useLoadFromDb, { Todo } from "./UseLoadFromDb";
+import { updateDoc, doc } from "firebase/firestore";
+import { fireStoredb } from "../../Config/firebase";
 
 type DayViewProps = {
   selectedMonthName: string;
-  setSelectedWeek: React.Dispatch<React.SetStateAction<number | null>>;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   todos: Todo[];
-  clickedYear: number;
   selectedMonthIndex: number;
-  selectedWeek: number;
+  selectedYear: number;
+  setSelectedDay: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedDay: number;
 };
 
 const DayView: React.FC<DayViewProps> = ({
   selectedMonthIndex,
-  clickedYear,
   todos,
   setTodos,
-  setSelectedWeek,
   selectedMonthName,
-  selectedWeek,
+  selectedYear,
+  setSelectedDay,
+  selectedDay,
 }) => {
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [activeTodoIndex, setActiveTodoIndex] = useState<number | null>(null);
+  const [widths, setWidths] = useState<string[]>([]);
+  const todosRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-  const Day = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
+  const isStepCompleted = (step: any) => {
+    if (typeof step === "object" && step.completed) {
+      return true;
+    }
+    return false;
+  };
 
-  const clickDayHandler = (index: number) => {
-    setSelectedDay(index);
+  useEffect(() => {
+    setWidths(
+      todos.map((_, index) => {
+        const el = todosRefs.current[index];
+        return el ? el.innerText : "0%";
+      })
+    );
+  }, [todos]);
+
+  const chackhedTodoHandler = (todoId: string) => {
+    const currentTodo = todos.find((todo) => todo.id === todoId);
+    if (!currentTodo) return;
+
+    const completedStepsCount = currentTodo.steps.filter(
+      (step) => typeof step === "object" && step.completed
+    ).length;
+
+    const totalSteps = currentTodo.steps.length;
+
+    if (completedStepsCount === totalSteps) {
+      currentTodo.percentage = "100%";
+    } else {
+      const percentage = Math.round((completedStepsCount / totalSteps) * 100);
+      currentTodo.percentage = `${percentage}%`;
+    }
+
+    setTodos([...todos]);
+  };
+
+  const handleTodoClick = (index: number) => {
+    if (activeTodoIndex === index) {
+      setActiveTodoIndex(null);
+    } else {
+      setActiveTodoIndex(index);
+    }
   };
 
   const getPriorityClass = (priority: string) => {
@@ -48,7 +75,7 @@ const DayView: React.FC<DayViewProps> = ({
       case "low":
         return "bg-emerald-500";
       case "medium":
-        return "bg-sky-400";
+        return "bg-sky-500";
       case "high":
         return "bg-rose-500";
       default:
@@ -56,90 +83,157 @@ const DayView: React.FC<DayViewProps> = ({
     }
   };
 
-  function getAdjustedDayOfWeek(date: Date): number {
-    let day = date.getDay();
-    if (day === 0) {
-      return 6;
+  const todosForTheDay = todos.filter((todo) => {
+    const todoDate = new Date(todo.dueDate);
+    return (
+      todoDate.getDate() === selectedDay &&
+      todoDate.getMonth() === selectedMonthIndex &&
+      todoDate.getFullYear() === selectedYear
+    );
+  });
+
+  const toggleStepCompletion = async (index: number, stepIndex: number) => {
+    const updatedTodos = [...todos];
+    const currentTodo = updatedTodos[activeTodoIndex!];
+    const currentStep = currentTodo.steps[stepIndex];
+
+    if (typeof currentStep === "object") {
+      currentStep.completed = !currentStep.completed;
     } else {
-      return day - 1;
+      currentTodo.steps[stepIndex] = {
+        text: currentStep,
+        completed: true,
+      };
     }
-  }
 
-  const firstDayOfMonth = new Date(clickedYear, selectedMonthIndex, 1);
-  const adjustedFirstDay = getAdjustedDayOfWeek(firstDayOfMonth);
+    const completedStepsCount = currentTodo.steps.filter(
+      (step) => typeof step === "object" && step.completed
+    ).length;
 
-  const weekStartDay = selectedWeek * 7 + 1 - adjustedFirstDay;
-  const weekEndDay = (selectedWeek + 1) * 7 - adjustedFirstDay;
+    const percentage = Math.round(
+      (completedStepsCount / currentTodo.steps.length) * 100
+    );
+    currentTodo.percentage = `${percentage}%`;
+
+    updatedTodos[activeTodoIndex!] = currentTodo;
+    setTodos(updatedTodos);
+
+    try {
+      if (!currentTodo.id) {
+        console.error("Todo ID is undefined");
+        return;
+      }
+      const todoRef = doc(fireStoredb, "todos", currentTodo.id);
+
+      await updateDoc(todoRef, {
+        steps: currentTodo.steps,
+        percentage: currentTodo.percentage,
+      });
+    } catch (error) {
+      console.error("Error updating todo in Firestore: ", error);
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-10 pt-10 ">
+    <div>
       <div
-        className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer"
-        onClick={() => setSelectedWeek(null)}
+        className="text-center py-4 text-2xl text-white uppercase font-bold my-10 w-full bg-rose-500 border rounded-md cursor-pointer"
+        onClick={() => setSelectedDay(null)}
       >
-        Click back to <br /> Week
+        Click back to <br /> Calender
       </div>
-      <h1 className="text-white font-bold font-sans text-5xl text-center mb-5">
-        {`${selectedMonthName} of ${clickedYear}`}
-      </h1>
-      <div className="pt-0 w-[100%]">
-        <ul className="grid grid-cols-1">
-          {Day.map((day, index) => {
-            const currentDayOfMonth = weekStartDay + index;
-
-            if (
-              currentDayOfMonth < 1 ||
-              currentDayOfMonth >
-                new Date(clickedYear, selectedMonthIndex + 1, 0).getDate()
-            ) {
-              return null;
-            }
-
-            const todosForDay = todos.filter((todo) => {
-              const todoDate = new Date(todo.dueDate);
-              const dayOfMonth = todoDate.getDate();
-              const monthNumber = todoDate.getMonth();
-              const yearNumber = todoDate.getFullYear();
-
-              return (
-                monthNumber === selectedMonthIndex &&
-                yearNumber === clickedYear &&
-                dayOfMonth === currentDayOfMonth
-              );
-            });
-
-            return (
-              <li
-                key={index}
-                className="list-none md:w-full border-2 mb-5 border-transparent hover:border-2 hover:border-cyan-500 cursor-pointer "
-                onClick={() => clickDayHandler}
+      <div className="max-w-full  bg-gray-200 p-6 rounded-lg shadow-md mt-10">
+        <h2 className="text-2xl font-bold text-white bg-stone-900 rounded-lg mb-4 py-4 text-center">
+          {` ${selectedMonthName} ${selectedDay}, ${selectedYear}`} - Todo List
+        </h2>
+        <ul className="space-y-4">
+          {todosForTheDay.map((todo, index) => (
+            <li key={index}>
+              <div
+                className={`flex justify-between items-center p-3 rounded-md shadow-sm ${getPriorityClass(
+                  todo.priority
+                )}`}
+                onClick={() => handleTodoClick(index)}
               >
-                <div className="w-full 2xl:w-[52rem] h-96 border bg-white rounded-md relative hide-scrollbar flex pt-6 overflow-auto">
-                  <span className="absolute top-1 left-1">{day}</span>
-                  <div className="font-sans text-2xl rounded-full  flex flex-col first-letter:capitalize p-4 space-y-2 ">
-                    {todosForDay.map(
-                      ({ title, dueDate, priority }, todoIndex) => {
-                        const priorityClass = getPriorityClass(priority);
+                <span id={todo.id} className="text-2xl text-white">
+                  {todo.title}
+                </span>
 
-                        return (
-                          <div
-                            className={`w-[40rem] py-4 text-white  first-letter-capitalize flex rounded-md justify-center ${priorityClass}`}
-                            key={todoIndex}
-                          >
-                            <span className="fons-sans pl-4 w-[50%]">
-                              {title}
-                            </span>
-                            <span className="px-4"> {"=>"}</span>
-                            <span className="pr-4 w-[25%]">{dueDate}</span>
-                          </div>
-                        );
-                      }
-                    )}
+                <div className="flex items-center space-x-10">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-white font-sans text-lg">
+                      {todo.percentage ? todo.percentage : "0%"}
+                    </span>
+                    <div
+                      key={index}
+                      className="relative  h-4 w-32 bg-gray-300 rounded"
+                    >
+                      <div
+                        style={{ width: todo.percentage || "0%" }}
+                        className="absolute h-4 bg-green-500 rounded"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-rose-400 hover:bg-rose-600 p-2 rounded text-white text-2xl flex space-x-2 items-center justify-center cursor-pointer"
+                  >
+                    <span className="lnr lnr-trash"></span>
+                    <button>Delete</button>
                   </div>
                 </div>
-              </li>
-            );
-          })}
+              </div>
+              <div>
+                {index === activeTodoIndex && (
+                  <div className="mt-5 flex flex-col space-y-2 text-2xl">
+                    {todo.steps.length === 1 ? (
+                      <div className="step text-black flex space-x-2">
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleStepCompletion(index, 0);
+                          }}
+                          className={`lnr lnr-checkmark-circle text-3xl text-black font-bold ${
+                            isStepCompleted(todo.steps[0])
+                              ? "bg-emerald-400"
+                              : "hover:bg-emerald-400"
+                          } duration-200 rounded-full cursor-pointer`}
+                        ></span>
+                        <span>Complate Your Todo</span>
+                      </div>
+                    ) : (
+                      todo.steps.map((step, stepIndex) => {
+                        const stepText =
+                          typeof step === "object" ? step.text : step;
+
+                        return (
+                          <div key={stepIndex} className="step text-black">
+                            <label className="flex items-center space-x-2">
+                              <div>
+                                <span
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleStepCompletion(index, stepIndex);
+                                  }}
+                                  className={`lnr lnr-checkmark-circle text-3xl text-black font-bold ${
+                                    isStepCompleted(todo.steps[stepIndex])
+                                      ? "bg-emerald-400"
+                                      : "hover:bg-emerald-400"
+                                  } duration-200 rounded-full cursor-pointer`}
+                                ></span>
+                              </div>
+                              <span>{stepText}</span>
+                            </label>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

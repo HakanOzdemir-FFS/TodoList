@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 
 import DayView from "./DayView";
-
-type Todo = {
-  dueDate: string;
-  priority: string;
-  steps: string[];
-  title: string;
-  userId: string;
-};
+import { Todo } from "./UseLoadFromDb";
 
 type WeekViewProps = {
   selectedMonthName: string;
@@ -29,11 +22,12 @@ const WeekView: React.FC<WeekViewProps> = ({
   clickedYear,
   selectedMonthIndex,
 }) => {
-  const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
   const weekDay = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState(clickedYear);
 
-  const handleWeekClick = (index: number) => () => {
-    setSelectedWeek(index);
+  const handleDayClick = (index: number | null) => () => {
+    setSelectedDay(index);
   };
 
   const getPriorityClass = (priority: string) => {
@@ -71,16 +65,16 @@ const WeekView: React.FC<WeekViewProps> = ({
     })[0].priority;
   };
 
-  if (selectedWeek !== null) {
+  if (selectedDay !== null) {
     return (
       <DayView
         selectedMonthIndex={selectedMonthIndex}
         todos={todos}
         setTodos={setTodos}
-        clickedYear={clickedYear}
+        selectedYear={selectedYear}
         selectedMonthName={selectedMonthName}
-        setSelectedWeek={setSelectedWeek}
-        selectedWeek={selectedWeek}
+        setSelectedDay={setSelectedDay}
+        selectedDay={selectedDay}
       />
     );
   }
@@ -153,7 +147,9 @@ const WeekView: React.FC<WeekViewProps> = ({
                 priority
               )} flex items-center justify-center relative`}
             >
-              <span className="text-xs">{priorityFrequencies[priority]}</span>
+              <span className="text-xs text-white">
+                {priorityFrequencies[priority]}
+              </span>
             </div>
           )
         );
@@ -163,7 +159,7 @@ const WeekView: React.FC<WeekViewProps> = ({
           days.push(
             <div
               key={j}
-              className={`w-16 h-16 bg-gray-dark-3 font-bold justify-center items-center flex`}
+              className={`w-12 h-12 text-gray-400 text-2xl font-bold justify-center items-center flex`}
             >
               {daysInPrevMonth + currentDay}
             </div>
@@ -173,7 +169,7 @@ const WeekView: React.FC<WeekViewProps> = ({
           days.push(
             <div
               key={j}
-              className="w-16 h-16 bg-gray-dark-3 font-bold justify-center items-center flex relative"
+              className="w-12 h-12 text-gray-400 text-2xl font-bold justify-center items-center flex relative"
             >
               {currentDay - daysInMonth}
             </div>
@@ -183,7 +179,8 @@ const WeekView: React.FC<WeekViewProps> = ({
           days.push(
             <div
               key={j}
-              className="w-16 h-16 bg-black text-white font-bold justify-center items-center flex flex-col"
+              onClick={handleDayClick(currentDay)}
+              className="w-12 h-12 text-black text-2xl font-bold justify-center items-center flex flex-col cursor-pointer"
             >
               {currentDay}
               <div
@@ -209,30 +206,60 @@ const WeekView: React.FC<WeekViewProps> = ({
     return weeks;
   };
 
+  const prevMonthHandler = () => {
+    if (selectedMonthIndex <= 0) {
+      setSelectedYear(selectedYear - 1);
+      setSelectedMonth(11);
+    } else {
+      setSelectedMonth(selectedMonthIndex - 1);
+    }
+  };
+
+  const nextMonthHandler = () => {
+    if (selectedMonthIndex >= 11) {
+      setSelectedYear(selectedYear + 1);
+      setSelectedMonth(0);
+    } else {
+      setSelectedMonth(selectedMonthIndex + 1);
+    }
+  };
+
   return (
     <div className="mt-10 pb-20">
       <div
         className="text-center py-4 text-2xl text-white uppercase font-bold mb-10 w-full bg-rose-500 border rounded-md cursor-pointer "
         onClick={() => setSelectedMonth(null)}
       >
-        Click back to <br /> Year
+        Click back to <br /> Month
       </div>
-      <h1 className="text-white font-bold font-sans text-5xl text-center mb-10">
-        {`${selectedMonthName} ${clickedYear}`}
-      </h1>
+      <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full  mb-10 space-x-5 ">
+          <button
+            className="lnr lnr-arrow-left text-white font-bold text-6xl"
+            onClick={prevMonthHandler}
+          ></button>
+          <h1 className="text-white font-bold font-sans text-5xl text-center whitespace-nowrap w-96">
+            {`${selectedMonthName} ${selectedYear}`}
+          </h1>
+          <button
+            className="lnr lnr-arrow-right text-white font-bold text-6xl"
+            onClick={nextMonthHandler}
+          ></button>
+        </div>
+      </div>
 
-      <div className="w-[100%] h-auto p-5 bg-white flex flex-col space-y-10 justify-center items-center rounded-md shadow-md">
+      <div className="w-[100%]  h-auto p-16 bg-white flex flex-col space-y-10 justify-center items-center rounded-md shadow-md">
         <div className="flex space-x-10">
           {weekDay.map((day, index) => (
             <div
               key={index}
-              className="w-12 h-12 bg-sky-500 font-bold justify-center items-center flex"
+              className="w-12 h-12 bg-sky-500 text-white rounded-md font-bold justify-center items-center flex"
             >
               {day}
             </div>
           ))}
         </div>
-        {renderCalendar(clickedYear, selectedMonthIndex)}
+        {renderCalendar(selectedYear, selectedMonthIndex)}
       </div>
     </div>
   );

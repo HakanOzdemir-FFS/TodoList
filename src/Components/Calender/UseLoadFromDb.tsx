@@ -8,12 +8,15 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-type Todo = {
+export type Todo = {
+  id?: string;
   dueDate: string;
   priority: string;
-  steps: string[];
+  steps: { text: string; completed: boolean }[];
   title: string;
   userId: string;
+  completed: boolean;
+  percentage?: string;
 };
 
 const useLoadFromDb = (
@@ -36,7 +39,11 @@ const useLoadFromDb = (
       (querySnapshot) => {
         const todosData: Todo[] = [];
         querySnapshot.forEach((doc) => {
-          todosData.push(doc.data() as Todo);
+          const todoData = doc.data() as Todo;
+          todosData.push({
+            ...todoData,
+            id: doc.id,
+          });
         });
         setTodos(todosData);
       },

@@ -55,8 +55,8 @@ code {
   @apply bg-gray-dark-1;
 }
 
-.dark .bg-sky-500 {
-  @apply bg-gray-dark-2;
+.dark.bg-sky-500 {
+  @apply bg-sky-900;
 }
 
 .dark .bg-white {
@@ -73,12 +73,17 @@ code {
   @apply text-gray-dark-5;
 }
 
+
 .dark input {
   @apply text-black;
 }
 
 .dark .bg-rose-500 {
   @apply bg-rose-700;
+}
+
+.dark .bg-rose-400 {
+  @apply bg-rose-600;
 }
 
 .dark .bg-sky-400 {
@@ -88,9 +93,3 @@ code {
 .dark .bg-emerald-500 {
   @apply bg-emerald-800;
 }
-
-
-
-
-
-

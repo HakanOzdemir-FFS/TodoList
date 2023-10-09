@@ -6,6 +6,7 @@ import NewTodo from "./Components/NewTodo/NewTodo";
 import NewTodoArea from "./Components/NewTodo/NewTodoArea";
 import "./Config/firebase";
 import WelcomePage from "./Components/WelcomePage/WelcomePage";
+import DayView from "./Components/Calender/DayView";
 
 function App() {
   const [isFullScreen, setIsFullScreen] = useState(true);
@@ -30,9 +31,9 @@ function App() {
         <WelcomePage />
       ) : (
         <div className="flex justify-center  xl:space-x-64 mt-32">
-          <div>
+          <div className="w-[50rem]">
             <NewTodo />
-            <YearView loggedUserId={loggedUserId}/>
+            <YearView loggedUserId={loggedUserId} />
           </div>
           <NewTodoArea
             isFullScreen={isFullScreen}

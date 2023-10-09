@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import WeekView from "./WeekView";
-
-type Todo = {
-  dueDate: string;
-  priority: string;
-  steps: string[];
-  title: string;
-  userId: string;
-};
+import { Todo } from "./UseLoadFromDb";
 
 type MonthViewProps = {
   todos: Todo[];
@@ -78,7 +71,7 @@ const MonthView: React.FC<MonthViewProps> = ({
         {`Year of ${clickedYear}`}
       </h1>
       <div className="pt-0 w-[100%]">
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-3">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-3">
           {Month.map((month, index) => {
             const todoCountForYear = todos.filter((todo) => {
               const todoDate = new Date(todo.dueDate);
@@ -101,7 +94,7 @@ const MonthView: React.FC<MonthViewProps> = ({
                 className="list-none md:w-full border-2 mb-5 border-transparent hover:border-2 hover:border-cyan-500 cursor-pointer "
                 onClick={handleMonthClick(index)}
               >
-                <div className="2xl:w-52 h-52 border bg-white rounded-md relative hide-scrollbar flex justify-center items-center">
+                <div className=" h-52 border bg-white rounded-md relative hide-scrollbar flex justify-center items-center">
                   <span className="absolute top-1 left-1">{month}</span>
                   <div
                     className="font-sans text-2xl rounded-full bg-rose-500 flex justify-center items-center"

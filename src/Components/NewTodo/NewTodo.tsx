@@ -13,7 +13,7 @@ const NewTodo = () => {
     <div className="pt-10 2xl:hidden flex flex-col justify-center items-center space-y-10">
       <div className="mx-auto flex  items-center space-x-10 ">
         <button
-          className="bg-sky-500 py-6 px-40 text-4xl font-bold text-white rounded-3xl shadow-xl"
+          className="bg-sky-500 py-6 px-40 text-4xl font-bold text-white rounded-3xl shadow-xl border-2 border-b-lime-50"
           onClick={() => {
             AddTodoClickHandler();
             setIsFullScreen(!isFullScreen);

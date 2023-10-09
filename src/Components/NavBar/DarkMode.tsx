@@ -21,7 +21,7 @@ const DarkMode = () => {
         onClick={darkModeHandler}
         className={`${
           darkMode ? "lnr-sun" : "lnr-moon"
-        } cursor-pointer lnr text-5xl text-white`}
+        } cursor-pointer lnr text-5xl text-black`}
       ></span>
     </div>
   );

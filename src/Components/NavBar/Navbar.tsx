@@ -61,7 +61,7 @@ const NavBar: React.FC<NavBarProps> = ({
   };
 
   return (
-    <div className="w-full z-50 h-32 bg-sky-500 fixed top-0 left-0">
+    <div className="w-full z-50 h-32 bg-sky-500 fixed top-0 left-0 border-b-2 border-b-lime-50">
       <div className="h-full max-w-[150rem] mx-auto flex justify-between items-center">
         <button className="my-auto max-w-6xl flex items-center space-x-5">
           <img
@@ -75,6 +75,11 @@ const NavBar: React.FC<NavBarProps> = ({
         </button>
 
         {/* Mobile NavBar Open*/}
+
+        <div className={`fixed sm:hidden top-9 right-40 z-20`}>
+          <DarkMode />
+        </div>
+
         <button
           onClick={navBarHandler}
           className={`w-24 h-24 mr-5 my-auto fixed top-2 right-2 rounded-full flex flex-col justify-center items-center space-y-2 sm:hidden z-20 ${
@@ -85,10 +90,10 @@ const NavBar: React.FC<NavBarProps> = ({
             className={`w-10 h-[2px] z-20 ${isOpen ? "bg-white" : "bg-black"}`}
           ></span>
           <span
-            className={`w-10 h-[2px] ${isOpen ? "bg-white" : "bg-black"}`}
+            className={`w-10 h-[2px] z-20 ${isOpen ? "bg-white" : "bg-black"}`}
           ></span>
           <span
-            className={`w-10 h-[2px] ${isOpen ? "bg-white" : "bg-black"}`}
+            className={`w-10 h-[2px] z-20 ${isOpen ? "bg-white" : "bg-black"}`}
           ></span>
         </button>
 
@@ -178,6 +183,8 @@ const NavBar: React.FC<NavBarProps> = ({
                 >
                   <span className="font-sans font-bold "> User</span>
                 </button>
+
+                {/* {DARK MODE} */}
                 <button
                   onClick={handleLogout}
                   className="lnr lnr-exit text-5xl w-full bg-rose-500 text-white hover:text-cyan-200 transition-all duration-200 
