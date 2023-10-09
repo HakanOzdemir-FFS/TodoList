@@ -39,6 +39,11 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, setLoggedUserId }) => {
       {logInError && (
         <div className="text-rose-500">Please Check Email and Password</div>
       )}
+      <div className="flex flex-col items-center md:space-y-3">
+        <span className="text-xl">Example user</span>
+        <span className="text-2xl font-bold">try@todoapp.com</span>
+        <span className="text-2xl font-bold">123456</span>
+      </div>
 
       <div className="flex justify-center items-center space-x-12">
         <span className="w-24">Email:</span>

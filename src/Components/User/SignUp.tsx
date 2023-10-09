@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 
-
 const SignUp = () => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [birthday, setBirthday] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [signUpError, setSignUpError] = useState(false);
+  const [signUpMessage, setSignUpMessage] = useState("");
 
   const handleSignUp = async () => {
     const auth = getAuth();
@@ -27,8 +28,8 @@ const SignUp = () => {
         birthday: birthday,
         email: email,
       });
-
-      console.log("Kullanıcı bilgisi Realtime Database'e eklendi.");
+      setSignUpError(false);
+      setSignUpMessage("A user was successfully created.");
     } catch (error) {
       if (
         typeof error === "object" &&
@@ -36,7 +37,8 @@ const SignUp = () => {
         "code" in error &&
         error.code === "auth/email-already-in-use"
       ) {
-        alert("Bu e-posta adresiyle zaten bir hesap oluşturulmuş!");
+        setSignUpMessage("An account with this email address already exists!");
+        setSignUpError(true);
       } else if (
         typeof error === "object" &&
         error !== null &&
@@ -44,13 +46,16 @@ const SignUp = () => {
       ) {
         alert(error.message);
       } else {
-        alert("Bir hata oluştu.");
+        setSignUpMessage("An error occurred.");
+        setSignUpError(true);
       }
     }
   };
 
   return (
     <div className=" flex justify-center items-baseline flex-col space-y-10 font-bold text-2xl">
+      {!signUpError && <div className="text-green-500 self-center text-center">{signUpMessage}</div>}
+      {signUpError && <div className="text-rose-500 text-center">{signUpMessage}</div>}
       <div className="flex justify-start items-center space-x-12">
         <span className="w-24">Name:</span>
         <input

@@ -5,8 +5,7 @@ import DesktopLogIn from "../User/DesktopLogIn";
 import { getAuth, signOut } from "firebase/auth";
 import DarkMode from "./DarkMode";
 import Reminders from "./Reminders";
-
-import useLoadRemindersFromDb from "./useLoadRemindersFromDb";
+import ChangePassword from "./ChangePassword";
 
 interface NavBarProps {
   isLoggedIn: boolean;
@@ -29,23 +28,38 @@ const NavBar: React.FC<NavBarProps> = ({
   const [desktopView, setDesktopView] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [userShowDropdown, setUserShowDropdown] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [showChangePasswordDropdown, setShowChangePasswordDropdown] =
+    useState(false);
+  const [showChangePasswordComponent, setShowChangePasswordComponent] =
+    useState(false);
+
+  const settingsClickHandler = () => {
+    setShowChangePasswordDropdown(!showChangePasswordDropdown);
+    setShowDropdown(false);
+    setUserShowDropdown(false);
+  };
 
   const notificationsClickHandler = () => {
     setUserShowDropdown(!userShowDropdown);
     setShowDropdown(false);
+    setShowChangePasswordDropdown(false);
   };
 
   const userIconHandler = () => {
     setShowDropdown(!showDropdown);
     setUserShowDropdown(false);
+    setShowChangePasswordDropdown(false);
+  };
+
+  const handleOpenChangePassword = () => {
+    setShowChangePasswordComponent(true);
+    setShowChangePasswordDropdown(false);
   };
 
   const handleLogout = async () => {
     const auth = getAuth();
     try {
       await signOut(auth);
-      console.log("Successfully signed out!");
       setShowDropdown(false);
       setIsLoggedIn(false);
     } catch (error) {
@@ -71,6 +85,11 @@ const NavBar: React.FC<NavBarProps> = ({
 
   const signUpClickHandler = () => {
     setDesktopView("signUp");
+  };
+
+  const onChangePasswordSuccess = () => {
+    console.log("Password changed successfully!");
+    setShowChangePasswordComponent(false); // Şifre başarılı bir şekilde değiştirildiyse ChangePassword bileşenini kapatın.
   };
 
   return (
@@ -249,7 +268,32 @@ const NavBar: React.FC<NavBarProps> = ({
                 loggedUserId={loggedUserId}
               />
             </div>
-            <button className="lnr lnr-cog text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
+            <div>
+              <button
+                className="lnr lnr-cog text-5xl text-white hover:text-cyan-200 transition-all duration-200"
+                onClick={settingsClickHandler}
+              ></button>
+              {showChangePasswordComponent && (
+                <ChangePassword
+                  setShowChangePasswordComponent={
+                    setShowChangePasswordComponent
+                  }
+                  onChangePasswordSuccess={onChangePasswordSuccess}
+                />
+              )}
+              {showChangePasswordDropdown && (
+                <div className="absolute text-white py-2 px-8 bg-rose-500 rounded-md top-[180%] -right-10 z-10 border border-white flex items-center space-x-5 hover:bg-rose-700 duration-150">
+                  <button
+                    className="text-2xl font-bold flex items-center space-x-5 "
+                    onClick={handleOpenChangePassword}
+                  >
+                    <span className="lnr lnr-sync text-4xl"></span>
+                    <span> Change Password</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
             <button
               onClick={userIconHandler}
               className="lnr lnr-user text-5xl text-white hover:text-cyan-200 transition-all duration-200"

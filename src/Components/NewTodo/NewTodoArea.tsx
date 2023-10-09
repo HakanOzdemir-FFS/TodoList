@@ -54,13 +54,29 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
       reminderDateTime: reminderDateTime,
     };
 
-    if (!title || !dueDate || !priority || !reminderDate || !reminderTime) {
+    if (!title || !dueDate || !priority) {
       setNotsuccess(true);
       setSuccessAdded(false);
       return;
     }
 
-    addTodo(todo);
+    addTodo(todo)
+      .then(() => {
+        setTitle("");
+        setDueDate("");
+        setPriority("");
+        setSteps([""]);
+        setReminderDate("");
+        setReminderTime("");
+        setSelectedRadio(null);
+        setIsCheck(false);
+        setSuccessAdded(true);
+        setNotsuccess(false);
+      })
+      .catch(() => {
+        setNotsuccess(true);
+        setSuccessAdded(false);
+      });
   };
 
   interface Todo {
@@ -92,13 +108,13 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
   const addTodo = async (todo: Todo) => {
     try {
       const docRef = await addDoc(collection(fireStoredb, "todos"), {
-        ...todo, // Daha temiz bir yapı için spread operatörünü kullandım
+        ...todo,
       });
 
       setSuccessAdded(true);
       setNotsuccess(false);
     } catch (e: any) {
-      console.error("Error adding todo:", e.message); // Hata mesajını daha spesifik hale getirdim
+      console.error("Error adding todo:", e.message);
       setNotsuccess(true);
       setSuccessAdded(false);
     }

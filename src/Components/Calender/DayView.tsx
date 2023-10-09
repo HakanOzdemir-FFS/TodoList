@@ -92,9 +92,17 @@ const DayView: React.FC<DayViewProps> = ({
     );
   });
 
-  const toggleStepCompletion = async (index: number, stepIndex: number) => {
+  const toggleStepCompletion = async (
+    todoId: number | string,
+    stepIndex: number
+  ) => {
+    if (!todoId) return;
+
+    const todoIndex = todos.findIndex((todo) => todo.id === todoId);
+    if (todoIndex === -1) return;
+
     const updatedTodos = [...todos];
-    const currentTodo = updatedTodos[activeTodoIndex!];
+    const currentTodo = updatedTodos[todoIndex];
     const currentStep = currentTodo.steps[stepIndex];
 
     if (typeof currentStep === "object") {
@@ -115,7 +123,7 @@ const DayView: React.FC<DayViewProps> = ({
     );
     currentTodo.percentage = `${percentage}%`;
 
-    updatedTodos[activeTodoIndex!] = currentTodo;
+    updatedTodos[todoIndex] = currentTodo;
     setTodos(updatedTodos);
 
     try {
@@ -134,6 +142,13 @@ const DayView: React.FC<DayViewProps> = ({
     }
   };
 
+  const prevDay = () => {
+    setSelectedDay(selectedDay - 1);
+  };
+  const nextDay = () => {
+    setSelectedDay(selectedDay + 1);
+  };
+
   return (
     <div>
       <div
@@ -141,6 +156,28 @@ const DayView: React.FC<DayViewProps> = ({
         onClick={() => setSelectedDay(null)}
       >
         Click back to <br /> Calender
+      </div>
+      <div className="flex w-full">
+        <div className="flex justify-center w-full space-x-5 ">
+          <div
+            className="bg-stone-800 rounded-lg flex-col space-y-3 p-2 flex  cursor-pointer"
+            onClick={prevDay}
+          >
+            <button className="lnr lnr-arrow-left text-white font-bold text-6xl"></button>
+            <span className="text-white text-xl font-sans">
+              {selectedDay - 1} {selectedMonthName}
+            </span>
+          </div>
+          <div
+            className="bg-stone-800 rounded-lg flex-col space-y-3 p-2 flex  cursor-pointer"
+            onClick={nextDay}
+          >
+            <button className="lnr lnr-arrow-right text-white font-bold text-6xl"></button>
+            <span className="text-white text-xl font-sans">
+              {selectedDay + 1} {selectedMonthName}
+            </span>
+          </div>
+        </div>
       </div>
       <div className="max-w-full  bg-gray-200 p-6 rounded-lg shadow-md mt-10">
         <h2 className="text-2xl font-bold text-white bg-stone-900 rounded-lg mb-4 py-4 text-center">
@@ -188,11 +225,13 @@ const DayView: React.FC<DayViewProps> = ({
                 {index === activeTodoIndex && (
                   <div className="mt-5 flex flex-col space-y-2 text-2xl">
                     {todo.steps.length === 1 ? (
-                      <div className="step text-black flex space-x-2">
+                      <div className="step text-black flex space-x-2 items-center">
                         <span
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleStepCompletion(index, 0);
+                            if (todo.id) {
+                              toggleStepCompletion(todo.id, 0);
+                            }
                           }}
                           className={`lnr lnr-checkmark-circle text-3xl text-black font-bold ${
                             isStepCompleted(todo.steps[0])
@@ -200,7 +239,9 @@ const DayView: React.FC<DayViewProps> = ({
                               : "hover:bg-emerald-400"
                           } duration-200 rounded-full cursor-pointer`}
                         ></span>
-                        <span>Complate Your Todo</span>
+                        <span className="w-full py-4 bg-stone-700 text-white px-4 rounded-lg">
+                          Complate Your Todo
+                        </span>
                       </div>
                     ) : (
                       todo.steps.map((step, stepIndex) => {
@@ -214,7 +255,9 @@ const DayView: React.FC<DayViewProps> = ({
                                 <span
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    toggleStepCompletion(index, stepIndex);
+                                    if (todo.id) {
+                                      toggleStepCompletion(todo.id, stepIndex);
+                                    }
                                   }}
                                   className={`lnr lnr-checkmark-circle text-3xl text-black font-bold ${
                                     isStepCompleted(todo.steps[stepIndex])
@@ -223,7 +266,9 @@ const DayView: React.FC<DayViewProps> = ({
                                   } duration-200 rounded-full cursor-pointer`}
                                 ></span>
                               </div>
-                              <span>{stepText}</span>
+                              <span className="w-full py-4 bg-stone-700 text-white px-4 rounded-lg">
+                                {stepText}
+                              </span>
                             </label>
                           </div>
                         );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MonthView from "./MonthView";
 import UseLoadFromDb from "./UseLoadFromDb";
 import { Todo } from "./UseLoadFromDb";
+import Greet from "../WelcomePage/Greet";
 
 type YearViewProps = {
   loggedUserId: string;
@@ -31,7 +32,7 @@ const YearView: React.FC<YearViewProps> = ({ loggedUserId }) => {
   return (
     <div className="flex flex-col items-center justify-center space-y-10 pt-10 ">
       <h1 className="text-white font-bold font-sans text-5xl text-center">
-        Welcome
+        <Greet />
       </h1>
       <div className="pt-0 w-[100%]">
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-3">
