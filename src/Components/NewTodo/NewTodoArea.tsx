@@ -40,6 +40,8 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
   };
 
   const handleSubmit = () => {
+    const reminderDateTime = `${reminderDate}T${reminderTime}:00.000Z`;
+
     const todo = {
       userId: userId,
       title: title,
@@ -49,14 +51,12 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
       reminderTime: reminderTime,
       reminderDate: reminderDate,
       periodic: selectedRadio,
+      reminderDateTime: reminderDateTime,
     };
-    setTitle("");
-    setDueDate("");
-    setPriority("");
-    setSteps([""]);
 
-    if (!title || !dueDate || !priority) {
+    if (!title || !dueDate || !priority || !reminderDate || !reminderTime) {
       setNotsuccess(true);
+      setSuccessAdded(false);
       return;
     }
 
@@ -72,39 +72,35 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
     reminderTime: string;
     reminderDate: string;
     periodic: string | null;
+    reminderDateTime: string;
   }
 
   useEffect(() => {
     const auth = getAuth();
 
-    onAuthStateChanged(auth, (user: User | null) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
         setUserId(user.uid);
       } else {
         setUserId(null);
       }
     });
+
+    return () => unsubscribe();
   }, []);
 
   const addTodo = async (todo: Todo) => {
     try {
       const docRef = await addDoc(collection(fireStoredb, "todos"), {
-        userId: todo.userId,
-        title: todo.title,
-        dueDate: todo.dueDate,
-        priority: todo.priority,
-        steps: todo.steps,
-        reminderTime: todo.reminderTime,
-        reminderDate: todo.reminderDate,
-        periodic: todo.periodic,
+        ...todo, // Daha temiz bir yapı için spread operatörünü kullandım
       });
 
       setSuccessAdded(true);
       setNotsuccess(false);
-    } catch (e) {
+    } catch (e: any) {
+      console.error("Error adding todo:", e.message); // Hata mesajını daha spesifik hale getirdim
       setNotsuccess(true);
-      setSuccessAdded(false); //Bu neden çalışmıyor bilmiyorum
-      console.error("Error adding todo: ", e);
+      setSuccessAdded(false);
     }
   };
 
@@ -200,14 +196,12 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
             onChange={(e) => setReminderTime(e.target.value)}
             className="mr-2 h-16 border-2 p-5 md:w-[12rem]  border-cyan-200 shadow-sm focus:outline-2 outline-sky-500 text-xl sm:text-2xl"
             type="time"
-            min={formattedDate}
           />
           <input
             value={reminderDate}
             onChange={(e) => setReminderDate(e.target.value)}
             className=" border-2 h-16  md:w-[12rem]  border-cyan-200 shadow-sm focus:outline-2 outline-sky-500 text-xl sm:text-2xl"
             type="date"
-            min={formattedDate}
           />
         </div>
       </div>

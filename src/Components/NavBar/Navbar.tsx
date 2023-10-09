@@ -4,12 +4,16 @@ import SignUp from "../User/SignUp";
 import DesktopLogIn from "../User/DesktopLogIn";
 import { getAuth, signOut } from "firebase/auth";
 import DarkMode from "./DarkMode";
+import Reminders from "./Reminders";
+
+import useLoadRemindersFromDb from "./useLoadRemindersFromDb";
 
 interface NavBarProps {
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   onLoginSuccess: () => void;
   setLoggedUserId: React.Dispatch<React.SetStateAction<string>>;
+  loggedUserId: string;
 }
 
 const NavBar: React.FC<NavBarProps> = ({
@@ -17,12 +21,25 @@ const NavBar: React.FC<NavBarProps> = ({
   onLoginSuccess,
   setIsLoggedIn,
   setLoggedUserId,
+  loggedUserId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [animationName, setAnimationName] = useState("");
   const [view, setView] = useState("");
   const [desktopView, setDesktopView] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [userShowDropdown, setUserShowDropdown] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const notificationsClickHandler = () => {
+    setUserShowDropdown(!userShowDropdown);
+    setShowDropdown(false);
+  };
+
+  const userIconHandler = () => {
+    setShowDropdown(!showDropdown);
+    setUserShowDropdown(false);
+  };
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -54,10 +71,6 @@ const NavBar: React.FC<NavBarProps> = ({
 
   const signUpClickHandler = () => {
     setDesktopView("signUp");
-  };
-
-  const userIconHandler = () => {
-    setShowDropdown(!showDropdown);
   };
 
   return (
@@ -226,7 +239,16 @@ const NavBar: React.FC<NavBarProps> = ({
         ) : (
           <div className="justify-between items-center mr-10 space-x-10 hidden sm:flex relative">
             <DarkMode />
-            <button className="lnr lnr-alarm text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
+            <div className="relative">
+              <button
+                onClick={notificationsClickHandler}
+                className="lnr lnr-alarm text-5xl text-white hover:text-cyan-200 transition-all duration-200"
+              ></button>
+              <Reminders
+                userShowDropdown={userShowDropdown}
+                loggedUserId={loggedUserId}
+              />
+            </div>
             <button className="lnr lnr-cog text-5xl text-white hover:text-cyan-200 transition-all duration-200"></button>
             <button
               onClick={userIconHandler}
