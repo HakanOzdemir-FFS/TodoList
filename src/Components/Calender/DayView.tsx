@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import useLoadFromDb, { Todo } from "./UseLoadFromDb";
-import { updateDoc, doc } from "firebase/firestore";
+import { deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { fireStoredb } from "../../Config/firebase";
 
 type DayViewProps = {
@@ -149,6 +149,16 @@ const DayView: React.FC<DayViewProps> = ({
     setSelectedDay(selectedDay + 1);
   };
 
+  const deleteTodo = async (todoId: string) => {
+    const todoRef = doc(fireStoredb, "todos", todoId);
+    try {
+      await deleteDoc(todoRef);
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
+  };
+
   return (
     <div>
       <div
@@ -217,15 +227,24 @@ const DayView: React.FC<DayViewProps> = ({
                     className="bg-rose-400 hover:bg-rose-600 p-2 rounded text-white text-2xl flex space-x-2 items-center justify-center cursor-pointer"
                   >
                     <span className="lnr lnr-trash"></span>
-                    <button>Delete</button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (todo.id) {
+                          deleteTodo(todo.id);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               </div>
               <div>
                 {index === activeTodoIndex && (
-                  <div className="mt-5 flex flex-col space-y-2 text-2xl">
-                    {todo.steps.length === 1 ? (
-                      <div className="step text-black flex space-x-2 items-center">
+                  <div className="mt-5 pb-10 max-h-[20rem] overflow-y-auto flex flex-col space-y-2 text-2xl">
+                    {todo.steps.length === 0 ? (
+                      <div className="step text-black flex space-x-2 items-center overflow-y-auto">
                         <span
                           onClick={(e) => {
                             e.stopPropagation();

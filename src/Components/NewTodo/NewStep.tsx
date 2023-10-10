@@ -10,7 +10,9 @@ const NewStep: React.FC<NewStepProps> = ({ steps, setSteps }) => {
   const lastInputRef = useRef<HTMLInputElement | null>(null);
 
   const addStep = () => {
-    setSteps([...steps, ""]);
+    if (steps[steps.length - 1] !== "") {
+      setSteps([...steps, ""]);
+    }
   };
 
   const updateStep = (index: number, value: string) => {

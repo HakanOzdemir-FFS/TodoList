@@ -41,13 +41,14 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
 
   const handleSubmit = () => {
     const reminderDateTime = `${reminderDate}T${reminderTime}:00.000Z`;
+    const filteredSteps = steps.filter((step) => step.trim() !== "");
 
     const todo = {
       userId: userId,
       title: title,
       dueDate: dueDate,
       priority: priority,
-      steps: steps,
+      steps: filteredSteps,
       reminderTime: reminderTime,
       reminderDate: reminderDate,
       periodic: selectedRadio,
