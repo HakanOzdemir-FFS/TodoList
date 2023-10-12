@@ -62,6 +62,7 @@ const NavBar: React.FC<NavBarProps> = ({
       await signOut(auth);
       setShowDropdown(false);
       setIsLoggedIn(false);
+      localStorage.setItem("isLoggedIn", "0");
     } catch (error) {
       console.error("Error signing out: ", error);
     }

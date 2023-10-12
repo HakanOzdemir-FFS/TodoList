@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import YearView from "./Components/Calender/YearView";
 import NavBar from "./Components/NavBar/Navbar";
@@ -14,10 +14,20 @@ function App() {
   const [loggedUserId, setLoggedUserId] = useState<string>("");
 
   const handleLoginSuccess = () => {
+    localStorage.setItem("isLoggedIn", "1");
     setTimeout(() => {
       setIsLoggedIn(true);
     }, 1500);
   };
+
+  useEffect(() => {
+    const isLoggedInUser = localStorage.getItem("isLoggedIn");
+    if (isLoggedInUser === "1") {
+      setIsLoggedIn(true);
+    } else if (isLoggedInUser === "0") {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   return (
     <div>
