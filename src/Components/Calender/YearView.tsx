@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MonthView from "./MonthView";
 import UseLoadFromDb from "./UseLoadFromDb";
-import { Todo } from "./UseLoadFromDb";
 import Greet from "../WelcomePage/Greet";
 
 type YearViewProps = {

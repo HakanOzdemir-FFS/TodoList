@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import DayView from "./DayView";
 import { Todo } from "./UseLoadFromDb";
 
@@ -41,28 +40,6 @@ const WeekView: React.FC<WeekViewProps> = ({
       default:
         return "";
     }
-  };
-
-  const getHighestPriorityForDate = (
-    todos: Todo[],
-    date: Date
-  ): string | null => {
-    const todosForDay = todos.filter((todo) => {
-      const todoDate = new Date(todo.dueDate);
-      return (
-        todoDate.getDate() === date.getDate() &&
-        todoDate.getMonth() === date.getMonth() &&
-        todoDate.getFullYear() === date.getFullYear()
-      );
-    });
-
-    if (!todosForDay.length) return null;
-
-    return todosForDay.sort((a, b) => {
-      if (a.priority === "high" || b.priority === "low") return -1;
-      if (b.priority === "high" || a.priority === "low") return 1;
-      return 0;
-    })[0].priority;
   };
 
   if (selectedDay !== null) {
