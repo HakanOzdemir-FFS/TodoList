@@ -24,7 +24,7 @@ function App() {
     const isLoggedInUser = localStorage.getItem("isLoggedIn");
     if (isLoggedInUser === "1") {
       setIsLoggedIn(true);
-    } else if (isLoggedInUser === "0") {
+    } else {
       setIsLoggedIn(false);
     }
   }, []);
