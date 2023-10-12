@@ -15,6 +15,7 @@ const DesktopLogIn: React.FC<DesktopLogInProps> = (
 
   const handleClose = () => {
     props.setDesktopView("");
+    setIsClicked(false);
   };
   
   const preventPropagation = (e: React.MouseEvent) => {

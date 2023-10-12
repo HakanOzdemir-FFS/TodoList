@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import useLoadFromDb, { Todo } from "./UseLoadFromDb";
+import React, { useState } from "react";
+import { Todo } from "./UseLoadFromDb";
 import { deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { fireStoredb } from "../../Config/firebase";
 
@@ -23,43 +23,12 @@ const DayView: React.FC<DayViewProps> = ({
   selectedDay,
 }) => {
   const [activeTodoIndex, setActiveTodoIndex] = useState<number | null>(null);
-  const [widths, setWidths] = useState<string[]>([]);
-  const todosRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   const isStepCompleted = (step: any) => {
     if (typeof step === "object" && step.completed) {
       return true;
     }
     return false;
-  };
-
-  useEffect(() => {
-    setWidths(
-      todos.map((_, index) => {
-        const el = todosRefs.current[index];
-        return el ? el.innerText : "0%";
-      })
-    );
-  }, [todos]);
-
-  const chackhedTodoHandler = (todoId: string) => {
-    const currentTodo = todos.find((todo) => todo.id === todoId);
-    if (!currentTodo) return;
-
-    const completedStepsCount = currentTodo.steps.filter(
-      (step) => typeof step === "object" && step.completed
-    ).length;
-
-    const totalSteps = currentTodo.steps.length;
-
-    if (completedStepsCount === totalSteps) {
-      currentTodo.percentage = "100%";
-    } else {
-      const percentage = Math.round((completedStepsCount / totalSteps) * 100);
-      currentTodo.percentage = `${percentage}%`;
-    }
-
-    setTodos([...todos]);
   };
 
   const handleTodoClick = (index: number) => {

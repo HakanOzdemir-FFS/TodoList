@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Login from "../User/Login";
 import SignUp from "../User/SignUp";
 import DesktopLogIn from "../User/DesktopLogIn";
 import { getAuth, signOut } from "firebase/auth";
 import DarkMode from "./DarkMode";
-import Reminders from "./Reminders";
+// import Reminders from "./Reminders";
 import ChangePassword from "./ChangePassword";
 
 interface NavBarProps {
@@ -264,10 +264,10 @@ const NavBar: React.FC<NavBarProps> = ({
                 onClick={notificationsClickHandler}
                 className="lnr lnr-alarm text-5xl text-white hover:text-cyan-200 transition-all duration-200"
               ></button>
-              <Reminders
+              {/* <Reminders
                 userShowDropdown={userShowDropdown}
                 loggedUserId={loggedUserId}
-              />
+              /> */}
             </div>
             <div>
               <button

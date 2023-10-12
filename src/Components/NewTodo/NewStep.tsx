@@ -1,5 +1,4 @@
-import { stringify } from "querystring";
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 
 type NewStepProps = {
   steps: string[];

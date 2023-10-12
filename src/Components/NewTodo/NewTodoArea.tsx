@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { fireStoredb } from "../../Config/firebase";
-import useLoadFromDb, { Todo } from "../Calender/UseLoadFromDb";
-
 import NewStep from "./NewStep";
 
 type NewTodoAreaProps = {
@@ -25,14 +23,6 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [successAdded, setSuccessAdded] = useState(false);
   const [notSuccess, setNotsuccess] = useState(false);
-
-  const handleRadioClick = (value: string) => {
-    if (selectedRadio === value) {
-      setSelectedRadio(null);
-    } else {
-      setSelectedRadio(value);
-    }
-  };
 
   const checkHandler = () => {
     setIsCheck(!isCheck);
@@ -108,7 +98,7 @@ const NewTodoArea = (props: NewTodoAreaProps) => {
 
   const addTodo = async (todo: Todo) => {
     try {
-      const docRef = await addDoc(collection(fireStoredb, "todos"), {
+      await addDoc(collection(fireStoredb, "todos"), {
         ...todo,
       });
 

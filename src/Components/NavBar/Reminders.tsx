@@ -1,5 +1,5 @@
 import React from "react";
-import useLoadRemindersFromDb from "./useLoadRemindersFromDb";
+// import useLoadRemindersFromDb from "./useLoadRemindersFromDb";
 
 interface RemindersProps {
   userShowDropdown: boolean;
@@ -10,11 +10,11 @@ const Reminders: React.FC<RemindersProps> = ({
   userShowDropdown,
   loggedUserId,
 }) => {
-  const [reminders, setReminders] = useLoadRemindersFromDb(loggedUserId);
+  // const [reminders, setReminders] = useLoadRemindersFromDb(loggedUserId);
 
   return (
     <div className="">
-      {userShowDropdown && (
+      {/* {userShowDropdown && (
         <div className="absolute -left-[12rem] top-[5.8rem] w-[25rem] h-[30rem] border-2  bg-rose-500 rounded-lg">
           <span className="absolute  border-rose-500 w-0 h-0 border-l-[2rem] border-l-transparent border-r-[2rem] border-r-transparent border-b-[2rem] border-solid -top-5 left-[13.4rem] transform -translate-x-1/2"></span>
           <div className="flex flex-col mt-5 justify-center items-center space-y-3 p-5 overflow-y-auto h-[28rem]">
@@ -44,7 +44,7 @@ const Reminders: React.FC<RemindersProps> = ({
             )}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
